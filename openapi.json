@@ -1,0 +1,870 @@
+{
+  "components": {
+    "schemas": {
+      "Availability": {
+        "properties": {
+          "available": {
+            "description": "Indicate whether the instance is available in the region.",
+            "example": true,
+            "type": "boolean"
+          },
+          "region": {
+            "$ref": "#/components/schemas/Region"
+          }
+        },
+        "required": [
+          "region",
+          "available"
+        ],
+        "type": "object",
+        "x-stoplight": {
+          "id": "54yjsz6ztekt3"
+        }
+      },
+      "Cloud": {
+        "description": "Specifies the underlying cloud provider that the instance is launched in. For the latest list of supported clouds, call the /instances/types API for all clouds.",
+        "enum": [
+          "aws",
+          "azure",
+          "lambdalabs",
+          "tensordock",
+          "runpod",
+          "latitude",
+          "jarvislabs",
+          "oblivus",
+          "paperspace",
+          "datacrunch",
+          "massedcompute",
+          "vultr"
+        ],
+        "example": "tensordock",
+        "type": "string",
+        "x-stoplight": {
+          "id": "npt3dkfedoche"
+        }
+      },
+      "CloudAssignedId": {
+        "description": "The unique identifier of the instance issued by the underlying cloud provider. This value is not useful at this time.",
+        "example": "13b057d7-e266-4869-985f-760fe75a78b3",
+        "type": "string",
+        "x-stoplight": {
+          "id": "wuqm5ebf311og"
+        }
+      },
+      "CloudInstanceType": {
+        "description": "The instance type for the underlying cloud provider. The CloudInstanceType is determined by the combination of the shade_instance_type, cloud, and num_gpus fields",
+        "example": "A100_PCIE_40GB",
+        "type": "string",
+        "x-stoplight": {
+          "id": "mmvjjzz1oto2z"
+        }
+      },
+      "Configuration": {
+        "properties": {
+          "gpu_type": {
+            "description": "The type of GPU for the instance.",
+            "example": "A100",
+            "type": "string"
+          },
+          "interconnect": {
+            "description": "The type of interconnect for the GPU.",
+            "example": "pcie",
+            "type": "string"
+          },
+          "memory_in_gb": {
+            "description": "The amount of memory for the instance in gigabytes. Note that this is not VRAM. VRAM is determined by the GPU type and the number of GPUs.",
+            "example": 12,
+            "type": "integer"
+          },
+          "num_gpus": {
+            "description": "The number of GPUs for the instance.",
+            "example": 1,
+            "type": "integer"
+          },
+          "storage_in_gb": {
+            "description": "The amount of storage for the instance. If this storage is too low for the instance type, please email founders@shadeform.ai as the storage may be adjustable.",
+            "example": 256,
+            "type": "integer"
+          },
+          "vcpus": {
+            "description": "The number of vCPUs for the instance.",
+            "example": 6,
+            "type": "integer"
+          },
+          "vram_per_gpu_in_gb": {
+            "description": "The video memory per GPU for the instance in gigabytes.",
+            "example": 48,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "memory_in_gb",
+          "storage_in_gb",
+          "vcpus",
+          "num_gpus",
+          "gpu_type",
+          "interconnect",
+          "os",
+          "os_options",
+          "vram_per_gpu_in_gb"
+        ],
+        "type": "object",
+        "x-stoplight": {
+          "id": "0glb2h673rdhq"
+        }
+      },
+      "CostEstimate": {
+        "description": "The cost incurred by the instance. This cost is only the cost billed by Shadeform. This does not include the underlying cloud provider cost if you are managing instances in your own cloud provider account.",
+        "example": "103.4",
+        "type": "string",
+        "x-stoplight": {
+          "id": "kbvc6vnst38ek"
+        }
+      },
+      "CreateRequest": {
+        "properties": {
+          "cloud": {
+            "$ref": "#/components/schemas/Cloud"
+          },
+          "launch_configuration": {
+            "$ref": "#/components/schemas/LaunchConfiguration"
+          },
+          "name": {
+            "$ref": "#/components/schemas/Name"
+          },
+          "os": {
+            "description": "The operating system of the instance.",
+            "example": "ubuntu22.04_cuda12.2_shade_os",
+            "type": "string"
+          },
+          "region": {
+            "$ref": "#/components/schemas/Region"
+          },
+          "shade_cloud": {
+            "$ref": "#/components/schemas/ShadeCloud"
+          },
+          "shade_instance_type": {
+            "$ref": "#/components/schemas/ShadeInstanceType"
+          }
+        },
+        "required": [
+          "cloud",
+          "region",
+          "shade_instance_type",
+          "shade_cloud",
+          "name"
+        ],
+        "type": "object",
+        "x-stoplight": {
+          "id": "pue1x4td0w83n"
+        }
+      },
+      "CreateResponse": {
+        "description": "Response of the /instances/create API call",
+        "properties": {
+          "cloud_assigned_id": {
+            "$ref": "#/components/schemas/CloudAssignedId"
+          },
+          "id": {
+            "$ref": "#/components/schemas/Id"
+          }
+        },
+        "required": [
+          "id",
+          "cloud_assigned_id"
+        ],
+        "type": "object",
+        "x-stoplight": {
+          "id": "ezbmepat4b29w"
+        }
+      },
+      "CreatedAt": {
+        "description": "The timestamp of when the instance was created in UTC.",
+        "example": "2016-08-29T09:12:33.001Z",
+        "format": "date-time",
+        "type": "string",
+        "x-stoplight": {
+          "id": "3nyzdfd0v931b"
+        }
+      },
+      "DeletedAt": {
+        "description": "The timestamp of when the instance was deleted in UTC",
+        "example": "2016-08-29T09:12:33.001Z",
+        "format": "date-time",
+        "type": "string",
+        "x-stoplight": {
+          "id": "vuc99xxs6tg0o"
+        },
+        "nullable": true
+      },
+      "DockerConfiguration": {
+        "description": "May only be used if launch_configuration.type is 'docker'. Use docker_configuration to automatically pull and run a docker image when the instance is ready.",
+        "properties": {
+          "args": {
+            "description": "Specifies the container arguments passed into the image at run time.",
+            "example": "--model mistralai/Mistral-7B-v0.1",
+            "type": "string"
+          },
+          "envs": {
+            "description": "List of environment variable name-value pairs that will be passed to the docker container.",
+            "items": {
+              "$ref": "#/components/schemas/Env"
+            },
+            "type": "array"
+          },
+          "image": {
+            "description": "Specifies the docker image to be pulled and run on the instance at startup.",
+            "example": "vllm/vllm-openai:latest",
+            "type": "string"
+          },
+          "port_mappings": {
+            "description": "List of port mappings between the host instance and the docker container. Equivalent of -p flag for docker run command.",
+            "items": {
+              "$ref": "#/components/schemas/PortMappings"
+            },
+            "type": "array"
+          },
+          "shared_memory_in_gb": {
+            "description": "Describes the amount of shared memory to allocate for the instance. Equivalent to using the --shm-size flag in the docker cli. If shared_memory_in_gb is not specified, then the container will use the host namespace which is the equivalent of --ipc=host.",
+            "example": 8,
+            "type": "integer"
+          },
+          "volume_mounts": {
+            "description": "List of volume mounts between the host instance and the docker container. Equivalent of -v flag for docker run command.",
+            "items": {
+              "$ref": "#/components/schemas/VolumeMounts"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "image"
+        ],
+        "type": "object"
+      },
+      "Env": {
+        "description": "Environment variables for the container image.",
+        "properties": {
+          "name": {
+            "description": "Name of the environment variable",
+            "example": "HUGGING_FACE_HUB_TOKEN",
+            "type": "string"
+          },
+          "value": {
+            "description": "Value of the environment variable",
+            "example": "hugging_face_api_token",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "value"
+        ],
+        "type": "object"
+      },
+      "HourlyPrice": {
+        "description": "The base hourly price of the instance in cents. This cost does not include the Shadeform platform fee.",
+        "example": 210,
+        "type": "integer",
+        "x-stoplight": {
+          "id": "do34m8l80xay1"
+        }
+      },
+      "Id": {
+        "description": "The unique identifier for an instance managed by Shadeform. Used in the endpoint for the /instances/{id}/info and /instances/{id}/delete APIs.",
+        "example": "d290f1ee-6c54-4b01-90e6-d701748f0851",
+        "format": "uuid",
+        "type": "string",
+        "x-stoplight": {
+          "id": "9jjlvd3fss27h"
+        }
+      },
+      "Instance": {
+        "properties": {
+          "cloud": {
+            "$ref": "#/components/schemas/Cloud"
+          },
+          "cloud_assigned_id": {
+            "$ref": "#/components/schemas/CloudAssignedId"
+          },
+          "cloud_instance_type": {
+            "$ref": "#/components/schemas/CloudInstanceType"
+          },
+          "configuration": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Configuration"
+              },
+              {
+                "properties": {
+                  "os": {
+                    "description": "The operating system of the instance.",
+                    "example": "ubuntu_22_shade_os",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "os"
+                ],
+                "type": "object"
+              }
+            ]
+          },
+          "cost_estimate": {
+            "$ref": "#/components/schemas/CostEstimate"
+          },
+          "created_at": {
+            "$ref": "#/components/schemas/CreatedAt"
+          },
+          "deleted_at": {
+            "$ref": "#/components/schemas/DeletedAt"
+          },
+          "hourly_price": {
+            "$ref": "#/components/schemas/HourlyPrice"
+          },
+          "id": {
+            "$ref": "#/components/schemas/Id"
+          },
+          "ip": {
+            "$ref": "#/components/schemas/Ip"
+          },
+          "launch_configuration": {
+            "$ref": "#/components/schemas/LaunchConfiguration"
+          },
+          "name": {
+            "$ref": "#/components/schemas/Name"
+          },
+          "region": {
+            "$ref": "#/components/schemas/Region"
+          },
+          "shade_cloud": {
+            "$ref": "#/components/schemas/ShadeCloud"
+          },
+          "shade_instance_type": {
+            "$ref": "#/components/schemas/ShadeInstanceType"
+          },
+          "ssh_port": {
+            "$ref": "#/components/schemas/SshPort"
+          },
+          "ssh_user": {
+            "$ref": "#/components/schemas/SshUser"
+          },
+          "status": {
+            "$ref": "#/components/schemas/Status"
+          }
+        },
+        "required": [
+          "id",
+          "cloud",
+          "region",
+          "shade_instance_type",
+          "cloud_instance_type",
+          "cloud_assigned_id",
+          "shade_cloud",
+          "name",
+          "configuration",
+          "ip",
+          "ssh_user",
+          "ssh_port",
+          "status",
+          "cost_estimate",
+          "hourly_price",
+          "created_at",
+          "deleted_at"
+        ],
+        "type": "object",
+        "x-stoplight": {
+          "id": "j2a59ehkvhre3"
+        }
+      },
+      "InstanceType": {
+        "description": "Information about a specific instance type offered by Shadeform.",
+        "properties": {
+          "availability": {
+            "example": [
+              {
+                "available": true,
+                "region": "na-us-bos-1"
+              },
+              {
+                "available": false,
+                "region": "na-us-bos-2"
+              }
+            ],
+            "items": {
+              "$ref": "#/components/schemas/Availability"
+            },
+            "type": "array"
+          },
+          "cloud": {
+            "$ref": "#/components/schemas/Cloud"
+          },
+          "cloud_instance_type": {
+            "$ref": "#/components/schemas/CloudInstanceType"
+          },
+          "configuration": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Configuration"
+              },
+              {
+                "properties": {
+                  "os_options": {
+                    "description": "The list of available operating systems for the instance.",
+                    "example": [
+                      "ubuntu22.04_cuda12.2_shade_os",
+                      "ubuntu20.04_cuda12.0_shade_os"
+                    ],
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array"
+                  }
+                },
+                "required": [
+                  "os_options"
+                ],
+                "type": "object"
+              }
+            ]
+          },
+          "hourly_price": {
+            "$ref": "#/components/schemas/HourlyPrice"
+          },
+          "region": {
+            "$ref": "#/components/schemas/Region"
+          },
+          "shade_instance_type": {
+            "$ref": "#/components/schemas/ShadeInstanceType"
+          }
+        },
+        "required": [
+          "cloud",
+          "region",
+          "shade_instance_type",
+          "cloud_instance_type",
+          "configuration",
+          "hourly_price",
+          "availability"
+        ],
+        "type": "object",
+        "x-stoplight": {
+          "id": "2f6xv2h2n0q2t"
+        }
+      },
+      "InstanceTypesResponse": {
+        "description": "Response of /instances/types",
+        "properties": {
+          "instance_types": {
+            "items": {
+              "$ref": "#/components/schemas/InstanceType"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "instance_types"
+        ],
+        "type": "object",
+        "x-stoplight": {
+          "id": "jyyuedk1mjwhm"
+        }
+      },
+      "InstancesResponse": {
+        "properties": {
+          "instances": {
+            "items": {
+              "$ref": "#/components/schemas/Instance"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "instances"
+        ],
+        "type": "object",
+        "x-stoplight": {
+          "id": "lagtvzllnksx4"
+        }
+      },
+      "Ip": {
+        "description": "The public IP address of the instance. In select cases, it may also be the DNS.",
+        "example": "1.0.0.1",
+        "type": "string",
+        "x-stoplight": {
+          "id": "stslnxqnc26yc"
+        }
+      },
+      "LaunchConfiguration": {
+        "description": "Defines automatic actions after the instance becomes active.",
+        "properties": {
+          "docker_configuration": {
+            "$ref": "#/components/schemas/DockerConfiguration"
+          },
+          "script_configuration": {
+            "$ref": "#/components/schemas/ScriptConfiguration"
+          },
+          "type": {
+            "description": "Specifies the type of launch configuration. Use 'docker' to specify a container to spin up at launch. Use 'script' to provide a startup script that gets run at launch.",
+            "enum": [
+              "docker",
+              "script"
+            ],
+            "example": "docker",
+            "type": "string"
+          }
+        },
+        "required": [
+          "type"
+        ],
+        "type": "object",
+        "x-stoplight": {
+          "id": "z27tx9ztzv8ej"
+        }
+      },
+      "Name": {
+        "description": "The name of the instance",
+        "example": "cool-gpu-server",
+        "type": "string",
+        "x-stoplight": {
+          "id": "n4r8q04u2ogri"
+        }
+      },
+      "PortMappings": {
+        "description": "Maps the public instance port to a port on the container.",
+        "properties": {
+          "container_port": {
+            "description": "Port of the container.",
+            "example": 8000,
+            "type": "integer"
+          },
+          "host_port": {
+            "description": "Port of the host.",
+            "example": 80,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "host_port",
+          "container_port"
+        ],
+        "type": "object"
+      },
+      "Region": {
+        "description": "Specifies the region in the underlying cloud provider that the instance is launched in. For the latest list of supported regions per cloud, call the instances/types API for all regions.",
+        "example": "na-us-bos-1",
+        "type": "string",
+        "x-stoplight": {
+          "id": "8ji7lnatzoyyj"
+        }
+      },
+      "ScriptConfiguration": {
+        "description": "May only be used if launch_configuration.type is 'script'. Configures a startup script to be run automatically after the instance is active.",
+        "properties": {
+          "base64_script": {
+            "description": "A startup script that is base64 encoded. We recommend using https://www.base64encode.org/",
+            "example": "IyEvYmluL2Jhc2gKCiMgRW5kbGVzcyBsb29wCndoaWxlIHRydWUKZG8KICAgICMgRmV0Y2ggYSBjYXQgZmFjdCB3aXRoIGEgbWF4aW11bSBsZW5ndGggb2YgMTQwIGNoYXJhY3RlcnMKICAgIGN1cmwgLS1uby1wcm9ncmVzcy1tZXRlciBodHRwczovL2NhdGZhY3QubmluamEvZmFjdD9tYXhfbGVuZ3RoPTE0MAoKICAgICMgUHJpbnQgYSBuZXdsaW5lIGZvciByZWFkYWJpbGl0eQogICAgZWNobwoKICAgICMgU2xlZXAgZm9yIDMgc2Vjb25kcyBiZWZvcmUgdGhlIG5leHQgaXRlcmF0aW9uCiAgICBzbGVlcCAzCmRvbmUKCgo=",
+            "type": "string"
+          }
+        },
+        "required": [
+          "base64_script"
+        ],
+        "type": "object"
+      },
+      "ShadeCloud": {
+        "description": "If Shade Cloud is true, the instance will be launched in Shadeform's managed account. If Shade Cloud is false, Shadeform will check if you have provided an API Access Key for the specified cloud and launch the instance into your own cloud provider account. To launch in your own cloud provider account, you need to add your API Access Key for the cloud via the Shadeform Cloud Access Settings page at https://platform.shadeform.ai/settings/cloudaccess.",
+        "example": true,
+        "type": "boolean",
+        "x-stoplight": {
+          "id": "huk63zjn5c4ov"
+        }
+      },
+      "ShadeInstanceType": {
+        "description": "The Shadeform standardized instance identifier for instances with a specific GPU configuration. We map the standardized Shade Instance Type to each cloud provider's instance type. For example, launching an 'A100' Shade Instance Type in TensorDock and in Paperspace will ensure that both instances will have an A100 GPU.",
+        "example": "A100",
+        "type": "string",
+        "x-stoplight": {
+          "id": "pk7bnuvtk7kka"
+        }
+      },
+      "SshPort": {
+        "description": "The SSH port of the instance. In most cases, this will be port 22 but for some clouds, this may be a different port.",
+        "example": 22,
+        "type": "integer",
+        "x-stoplight": {
+          "id": "z1vkmklpjmljf"
+        }
+      },
+      "SshUser": {
+        "description": "The SSH user used to SSH into the instance.",
+        "example": "shadeform",
+        "type": "string",
+        "x-stoplight": {
+          "id": "flm43qecxrgx5"
+        }
+      },
+      "Status": {
+        "description": "The status of the instance.",
+        "enum": [
+          "pending",
+          "active",
+          "deleted"
+        ],
+        "example": "active",
+        "type": "string",
+        "x-stoplight": {
+          "id": "sny3doke2i0fx"
+        }
+      },
+      "VolumeMounts": {
+        "description": "Mounts the host volume to a container file path.",
+        "properties": {
+          "container_path": {
+            "description": "Filepath of the container.",
+            "example": "/root/.cache/huggingface",
+            "type": "string"
+          },
+          "host_path": {
+            "description": "Filepath of the host.",
+            "example": "~/.cache/huggingface",
+            "type": "string"
+          }
+        },
+        "required": [
+          "host_path",
+          "container_path"
+        ],
+        "type": "object"
+      }
+    },
+    "securitySchemes": {
+      "ApiKeyAuth": {
+        "in": "header",
+        "name": "X-API-KEY",
+        "type": "apiKey"
+      }
+    }
+  },
+  "info": {
+    "contact": {
+      "email": "ronald@shadeform.ai",
+      "name": "Ronald Ding",
+      "url": "www.shadeform.ai"
+    },
+    "description": "Shadeform is a single API and platform for deploying and managing cloud GPUs.",
+    "title": "Shadeform API",
+    "version": "1.0.0"
+  },
+  "openapi": "3.0.0",
+  "paths": {
+    "/instances/types": {
+      "get": {
+        "description": "Return all the GPU instance types with their corresponding availability and specs.",
+        "operationId": "GetInstanceTypes",
+        "parameters": [
+          {
+            "description": "Filter the instance type results by cloud.",
+            "example": "aws",
+            "in": "query",
+            "name": "cloud",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Filter the instance type results by region.",
+            "example": "us-east-1a",
+            "in": "query",
+            "name": "region",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Filter the instance type results by the number of gpus.",
+            "example": "1",
+            "in": "query",
+            "name": "num_gpus",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Filter the instance type results by gpu type.",
+            "example": "A100_80G",
+            "in": "query",
+            "name": "gpu_type",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Filter the instance type results by the shade instance type.",
+            "example": "A100_80G",
+            "in": "query",
+            "name": "shade_instance_type",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Filter the instance type results by availability.",
+            "example": "true",
+            "in": "query",
+            "name": "available",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "description": "Sort the order of the instance type results.",
+            "example": "price",
+            "in": "query",
+            "name": "sort",
+            "schema": {
+              "enum": [
+                "price"
+              ],
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InstanceTypesResponse"
+                }
+              }
+            },
+            "description": "Returns an InstanceTypesResponse object"
+          }
+        },
+        "summary": "/instances/types"
+      }
+    },
+    "/instances": {
+      "get": {
+        "description": "Get active and pending instances.",
+        "operationId": "instances",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InstancesResponse"
+                }
+              }
+            },
+            "description": "Returns an InstancesResponse object"
+          }
+        },
+        "summary": "/instances"
+      }
+    },
+    "/instances/create": {
+      "post": {
+        "description": "Create a new GPU instance.",
+        "operationId": "Create",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateResponse"
+                }
+              }
+            },
+            "description": "Returns a CreateResponse object"
+          }
+        },
+        "summary": "/instances/create"
+      }
+    },
+    "/instances/{id}/info": {
+      "get": {
+        "description": "Get details for the specified instance in the url.",
+        "operationId": "instances/info",
+        "parameters": [
+          {
+            "description": "The instance id",
+            "example": "d290f1ee-6c54-4b01-90e6-d701748f0851",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "minimum": 1,
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Instance"
+                }
+              }
+            },
+            "description": "Return an instance object."
+          }
+        },
+        "summary": "/instances/{id}/info",
+        "x-stoplight": {
+          "id": "g32ktbwpgymwi"
+        }
+      }
+    },
+    "/instances/{id}/delete": {
+      "post": {
+        "description": "Delete an instance. Some cloud providers may only allow deletion of an instance after it has moved to the 'active' status.",
+        "operationId": "Delete",
+        "responses": {
+          "200": {
+            "description": "Confirms the deletion of an instance"
+          }
+        },
+        "summary": "/instances/{id}/delete",
+        "x-stoplight": {
+          "id": "o812m999dmd0j"
+        }
+      },
+      "parameters": [
+        {
+          "description": "The instance id",
+          "example": "d290f1ee-6c54-4b01-90e6-d701748f0851",
+          "in": "path",
+          "name": "id",
+          "required": true,
+          "schema": {
+            "minimum": 1,
+            "type": "string"
+          }
+        }
+      ]
+    }
+  },
+  "security": [
+    {
+      "ApiKeyAuth": []
+    }
+  ],
+  "servers": [
+    {
+      "description": "Shadeform Production",
+      "url": "https://api.shadeform.ai/v1"
+    }
+  ]
+}
